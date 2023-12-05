@@ -48,4 +48,3 @@ workflow {
     }
 }
 
-// nextflow run main.nf --reads </path/to/reads> --readsType <illumina/ont>
