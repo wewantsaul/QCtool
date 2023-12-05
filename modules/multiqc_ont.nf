@@ -11,14 +11,14 @@ process multiqc_ont {
 	
 	input:
 	file(report)
+//	file(html)
+	file(taxon)
 	
 	output:
-	file("trimmed_multiqc.html")	
+	file("*")	
 
 	script:
 	"""
-	multiqc ${report}
-	
-	mv multiqc_report.html trimmed_multiqc.html
+	multiqc ${report} ${taxon}
 	"""
 }

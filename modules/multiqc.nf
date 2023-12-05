@@ -11,12 +11,13 @@ process multiqc {
 	
 	input:
 	file(html)
+	file(reports)
 	
 	output:
-	file("multiqc_report.html")	
+	file("*")	
 
 	script:
 	"""
-	multiqc ${html}
+	multiqc ${html} ${reports}
 	"""
 }

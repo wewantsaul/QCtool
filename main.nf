@@ -1,9 +1,11 @@
 nextflow.enable.dsl=2
 
 include {fastp} from './modules/fastp.nf'
-include {nanoplot} from './modules/nanoplot.nf'
+include {kraken_illumina} from './modules/kraken_illumina.nf'
+// include {nanoplot} from './modules/nanoplot.nf'
 include {chopper} from './modules/chopper.nf'
 include {nanoplot2} from './modules/nanoplot2'
+include {kraken_ont} from './modules/kraken_ont.nf'
 include {multiqc} from './modules/multiqc.nf'
 include {multiqc_ont} from './modules/multiqc_ont.nf'
 
@@ -24,7 +26,8 @@ workflow {
 	main:
 	
         fastp(ch_reads)
-        multiqc(fastp.out.html.collect())
+		kraken_illumina(fastp.out.trimmed, params.k2database)
+        multiqc(fastp.out.html.collect(), kraken_illumina.out.taxon.collect())
 
     } else if (params.readsType == 'ont') {
         Channel
@@ -32,11 +35,11 @@ workflow {
 			.map {file -> tuple(file.simpleName, file)}	
 			.set{ch_reads}
 
-        nanoplot(ch_reads)
-		multiqc(nanoplot.out.html.collect())
-		chopper(ch_reads)
+   //     nanoplot(ch_reads)
+		chopper(ch_reads) 
 		nanoplot2(chopper.out.trimmed)
-		multiqc_ont(nanoplot2.out.report.collect())
+		kraken_ont(chopper.out.trimmed, params.k2database)
+		multiqc_ont(nanoplot2.out.report.collect(), kraken_ont.out.taxon.collect())
         
 
 
